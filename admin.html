@@ -5,145 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - ABP Classes</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Admin-specific styles (you can move these to style.css if preferred) */
-        .admin-dashboard {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .admin-section {
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .admin-section h3 {
-            color: #0056b3;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .admin-section form {
-            max-width: 600px;
-            margin: 0 auto 20px auto;
-            border: none; /* Override general form styling */
-            box-shadow: none;
-            background-color: transparent;
-            padding: 0;
-        }
-
-        .admin-section input[type="text"],
-        .admin-section input[type="email"],
-        .admin-section textarea,
-        .admin-section select { /* Added for select dropdown */
-            width: calc(100% - 24px); /* Adjust for padding */
-            margin-bottom: 15px;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        .admin-section button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            margin-top: 10px;
-        }
-
-        .data-list {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            padding: 15px;
-            background-color: #fff;
-        }
-
-        .data-item {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .data-item:last-child {
-            border-bottom: none;
-        }
-        .data-item div {
-            flex-grow: 1;
-            margin-right: 15px;
-        }
-        .data-item p {
-            margin: 5px 0;
-            font-size: 0.95rem;
-        }
-        .data-item button {
-            margin-left: 10px;
-            padding: 8px 15px;
-            font-size: 0.9rem;
-        }
-        .data-item .actions {
-            display: flex;
-            gap: 5px;
-            margin-top: 5px; /* For smaller screens */
-        }
-
-        /* Message styling */
-        .message-item {
-            background-color: #f0f8ff;
-            border: 1px solid #d0e8f8;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-        .message-item strong {
-            color: #007bff;
-        }
-        .message-item small {
-            display: block;
-            color: #777;
-            margin-top: 5px;
-            font-size: 0.85em;
-        }
-        /* Hidden fields for editing */
-        .edit-fields {
-            margin-top: 10px;
-            border-top: 1px dashed #ccc;
-            padding-top: 10px;
-        }
-        .edit-fields input, .edit-fields textarea {
-            margin-bottom: 10px;
-        }
-
-        /* User assignment styling */
-        .user-assign-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px dashed #eee;
-        }
-        .user-assign-item:last-child {
-            border-bottom: none;
-        }
-        .user-assign-item .user-email {
-            font-weight: bold;
-            flex-grow: 1;
-        }
-        .user-assign-item select {
-            margin-right: 10px;
-            max-width: 200px;
-        }
-        .user-assign-item button {
-            margin-top: 0;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -167,16 +28,51 @@
                     <input type="text" id="courseTitle" placeholder="Course Title" required>
                     <textarea id="courseDescription" placeholder="Course Description" rows="3" required></textarea>
                     <input type="text" id="courseDuration" placeholder="Duration (e.g., 3 Months)" required>
-
-                    <input type="text" id="courseVideoUrls" placeholder="YouTube Video IDs (comma-separated)" title="Enter comma-separated YouTube video IDs (e.g., ID1,ID2)">
-                    <input type="file" id="coursePdfs" multiple accept=".pdf" title="Select multiple PDF files">
-                    
+                    <input type="file" id="coursePdfs" multiple accept=".pdf" title="Course-level PDF files (e.g., syllabus)">
                     <button type="submit">Add New Course</button>
                 </form>
-
                 <h4>Existing Courses</h4>
                 <div id="courseListAdmin" class="data-list">
                     <p>Loading courses...</p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Manage Subjects</h3>
+                <form id="addSubjectForm">
+                    <select id="selectCourseForSubject" required>
+                        <option value="">Select a Course</option>
+                    </select>
+                    <input type="text" id="subjectName" placeholder="Subject Name" required>
+                    <textarea id="subjectDescription" placeholder="Subject Description" rows="2"></textarea>
+                    <input type="number" id="subjectOrder" placeholder="Order (e.g., 1)" value="1" required>
+                    <button type="submit">Add New Subject</button>
+                </form>
+                <h4>Existing Subjects</h4>
+                <div id="subjectListAdmin" class="data-list">
+                    <p>Select a course above to view its subjects.</p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Manage Chapters</h3>
+                <form id="addChapterForm">
+                    <select id="selectCourseForChapter" required>
+                        <option value="">Select a Course</option>
+                    </select>
+                    <select id="selectSubjectForChapter" required disabled>
+                        <option value="">Select a Subject</option>
+                    </select>
+                    <input type="text" id="chapterName" placeholder="Chapter Name" required>
+                    <textarea id="chapterDescription" placeholder="Chapter Description" rows="2"></textarea>
+                    <input type="number" id="chapterOrder" placeholder="Order (e.g., 1)" value="1" required>
+                    <input type="text" id="chapterVideoUrls" placeholder="YouTube Video IDs (comma-separated for this chapter)" title="Enter comma-separated YouTube video IDs (e.g., ID1,ID2)">
+                    <input type="file" id="chapterPdfs" multiple accept=".pdf" title="Chapter-level PDF files">
+                    <button type="submit">Add New Chapter</button>
+                </form>
+                <h4>Existing Chapters</h4>
+                <div id="chapterListAdmin" class="data-list">
+                    <p>Select a subject above to view its chapters.</p>
                 </div>
             </div>
 
@@ -205,7 +101,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025 ABP Classes Admin. All rights reserved.</p>
+        <p>© 2025 ABP Classes Admin. All rights reserved.</p>
     </footer>
 
     <script type="module" src="app.js"></script>
