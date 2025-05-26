@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - ABP Classes</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Admin-specific styles (you can move these to style.css if preferred) */
+        .admin-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .admin-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .admin-section h3 {
+            color: #0056b3;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .admin-section form {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            border: none; /* Override general form styling */
+            box-shadow: none;
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .admin-section input[type="text"],
+        .admin-section input[type="number"],
+        .admin-section textarea {
+            width: calc(100% - 24px); /* Adjust for padding */
+            margin-bottom: 15px;
+        }
+
+        .admin-section button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .data-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .data-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        .data-item div {
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+        .data-item p {
+            margin: 5px 0;
+            font-size: 0.95rem;
+        }
+        .data-item button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        .data-item .actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px; /* For smaller screens */
+        }
+
+        /* Message styling */
+        .message-item {
+            background-color: #f0f8ff;
+            border: 1px solid #d0e8f8;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .message-item strong {
+            color: #007bff;
+        }
+        .message-item small {
+            display: block;
+            color: #777;
+            margin-top: 5px;
+            font-size: 0.85em;
+        }
+        /* Hidden fields for editing */
+        .edit-fields {
+            margin-top: 10px;
+            border-top: 1px dashed #ccc;
+            padding-top: 10px;
+        }
+        .edit-fields input, .edit-fields textarea {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">ABP Classes Admin</div>
+            <ul>
+                <li><a href="index.html">View Site</a></li>
+                <li><a href="#" id="adminLogoutBtn">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="admin-dashboard">
+            <h2>Admin Panel</h2>
+            <p id="adminWelcomeMessage">Welcome, Admin!</p>
+
+            <div class="admin-section">
+                <h3>Manage Courses</h3>
+                <form id="addCourseForm">
+                    <input type="text" id="courseTitle" placeholder="Course Title" required>
+                    <textarea id="courseDescription" placeholder="Course Description" rows="3" required></textarea>
+                    <input type="text" id="courseDuration" placeholder="Duration (e.g., 3 Months)" required>
+                    <input type="number" id="coursePrice" placeholder="Price (e.g., 299)" required>
+                    <button type="submit">Add New Course</button>
+                </form>
+
+                <h4>Existing Courses</h4>
+                <div id="courseListAdmin" class="data-list">
+                    <p>Loading courses...</p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>View Contact Messages</h3>
+                <div id="messageListAdmin" class="data-list">
+                    <p>Loading messages...</p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>User Management (Basic)</h3>
+                <div id="userListAdmin" class="data-list">
+                    <p>Loading users...</p>
+                    <p>Note: Full user management (e.g., deleting users) should be handled via Firebase Console for security.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 ABP Classes Admin. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
