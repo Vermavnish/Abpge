@@ -1,4 +1,4 @@
-// Firebase configuration from your prompt
+// Firebase configuration
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -18,60 +18,63 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-// --- DOM Elements ---
-const loginForm = document.getElementById('loginForm');
-const signupButton = document.getElementById('signupButton');
-const contactForm = document.getElementById('contactForm');
-const courseListDiv = document.querySelector('.course-list');
-const enrollNowButton = document.getElementById('enrollNow');
+// --- Firebase Interaction Functions ---
 
-// --- Functions for Firebase Interactions ---
-
-// Function to handle user signup (example)
+/**
+ * Handles user signup.
+ * @param {string} email - The user's email.
+ * @param {string} password - The user's password.
+ */
 async function handleSignup(email, password) {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User signed up:', userCredential.user);
-        alert('Signup successful! Please login.');
-        // Optionally redirect or show login form
+        console.log('User signed up successfully:', userCredential.user.email);
+        alert('Signup successful! You can now log in.');
+        window.location.href = 'login.html'; // Redirect to login page
     } catch (error) {
         console.error('Error signing up:', error.message);
         alert('Error signing up: ' + error.message);
     }
 }
 
-// Function to handle user login
+/**
+ * Handles user login.
+ * @param {string} email - The user's email.
+ * @param {string} password - The user's password.
+ */
 async function handleLogin(email, password) {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('User logged in:', userCredential.user);
+        console.log('User logged in successfully:', userCredential.user.email);
         alert('Login successful!');
-        // Redirect to a dashboard or show logged-in content
-        // Example: hide login section, show a welcome message
-        document.querySelector('.login-section').style.display = 'none';
-        // You might want to update the navigation bar to show "Logout" instead of "Login"
+        window.location.href = 'index.html'; // Redirect to home page after login
     } catch (error) {
         console.error('Error logging in:', error.message);
         alert('Error logging in: ' + error.message);
     }
 }
 
-// Function to handle user logout
+/**
+ * Handles user logout.
+ */
 async function handleLogout() {
     try {
         await signOut(auth);
-        console.log('User logged out');
+        console.log('User logged out successfully.');
         alert('Logged out successfully.');
-        // Redirect to home page or show login form
-        // Example: show login section
-        document.querySelector('.login-section').style.display = 'block';
+        window.location.href = 'index.html'; // Redirect to home page after logout
     } catch (error) {
         console.error('Error logging out:', error.message);
         alert('Error logging out: ' + error.message);
     }
 }
 
-// Function to add a contact message to Firestore
+/**
+ * Adds a contact message to Firestore.
+ * @param {string} name - Sender's name.
+ * @param {string} email - Sender's email.
+ * @param {string} message - The message content.
+ */
 async function addContactMessage(name, email, message) {
     try {
         const docRef = await addDoc(collection(db, "contactMessages"), {
@@ -81,19 +84,34 @@ async function addContactMessage(name, email, message) {
             timestamp: new Date()
         });
         console.log("Contact message written with ID: ", docRef.id);
-        alert('Your message has been sent!');
-        contactForm.reset(); // Clear the form
+        alert('Your message has been sent successfully!');
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.reset(); // Clear the form
+        }
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error adding contact message: ", e);
         alert('There was an error sending your message. Please try again.');
     }
 }
 
-// Function to fetch and display courses from Firestore
+/**
+ * Fetches and displays courses from Firestore on the courses page.
+ */
 async function fetchCourses() {
+    const courseListDiv = document.querySelector('.course-list');
+    if (!courseListDiv) return; // Exit if not on the courses page
+
+    courseListDiv.innerHTML = '<p>Loading courses...</p>'; // Show loading message
+
     try {
         const querySnapshot = await getDocs(collection(db, "courses"));
-        courseListDiv.innerHTML = ''; // Clear previous courses
+        if (querySnapshot.empty) {
+            courseListDiv.innerHTML = '<p>No courses are available at the moment. Please check back later!</p>';
+            return;
+        }
+
+        courseListDiv.innerHTML = ''; // Clear loading message
         querySnapshot.forEach((doc) => {
             const course = doc.data();
             const courseItem = document.createElement('div');
@@ -103,7 +121,7 @@ async function fetchCourses() {
                 <p>${course.description}</p>
                 <p><strong>Duration:</strong> ${course.duration}</p>
                 <p><strong>Price:</strong> ${course.price}</p>
-                <button>Learn More</button>
+                <button>View Details</button>
             `;
             courseListDiv.appendChild(courseItem);
         });
@@ -113,103 +131,138 @@ async function fetchCourses() {
     }
 }
 
-// --- Event Listeners ---
+// --- Event Listeners and Page-Specific Logic ---
 
-// Handle login form submission
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = loginForm.loginEmail.value;
-        const password = loginForm.loginPassword.value;
-        handleLogin(email, password);
-    });
-}
-
-// Handle signup button click (redirect or show signup form)
-if (signupButton) {
-    signupButton.addEventListener('click', () => {
-        alert('Signup functionality needs to be implemented. For now, use the login form.');
-        // In a real application, you would typically show a signup modal or redirect to a signup page.
-        // For example:
-        // window.location.href = 'signup.html';
-    });
-}
-
-// Handle contact form submission
-if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = contactForm.name.value;
-        const email = contactForm.email.value;
-        const message = contactForm.message.value;
-        addContactMessage(name, email, message);
-    });
-}
-
-// Handle "Enroll Now" button click
-if (enrollNowButton) {
-    enrollNowButton.addEventListener('click', () => {
-        // Smooth scroll to the courses section
-        document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-// --- Initial Data Loading ---
 document.addEventListener('DOMContentLoaded', () => {
-    fetchCourses(); // Load courses when the page loads
-
-    // Check for user authentication status on page load
+    // Universal Authentication State Listener for Navigation Bar
+    // This runs on every page load to update the "Login/Logout" link
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log('User is logged in:', user.email);
-            // Update UI to show logged-in state (e.g., "Logout" button)
-            // Example:
-            // const loginNavLink = document.querySelector('nav ul li a[href="#login"]');
-            // if (loginNavLink) {
-            //     loginNavLink.textContent = 'Logout';
-            //     loginNavLink.id = 'logoutNavLink'; // Add an ID for easy targeting
-            //     loginNavLink.removeEventListener('click', /* previous login handler */);
-            //     loginNavLink.addEventListener('click', handleLogout);
-            // }
-            // Hide login section if user is logged in
-            document.querySelector('.login-section').style.display = 'none';
-        } else {
-            console.log('No user is logged in');
-            // Update UI to show logged-out state (e.g., "Login" button)
-            // Example:
-            // const logoutNavLink = document.getElementById('logoutNavLink');
-            // if (logoutNavLink) {
-            //     logoutNavLink.textContent = 'Login';
-            //     logoutNavLink.href = '#login';
-            //     logoutNavLink.removeEventListener('click', handleLogout);
-            //     logoutNavLink.addEventListener('click', /* add login handler */);
-            //     logoutNavLink.removeAttribute('id');
-            // }
-            document.querySelector('.login-section').style.display = 'block';
+        const loginNavLink = document.querySelector('nav ul li a[href="login.html"], nav ul li a[data-auth="true"]');
+        if (loginNavLink) {
+            if (user) {
+                // User is logged in
+                loginNavLink.textContent = 'Logout';
+                loginNavLink.href = '#'; // Change href to a dummy value or remove for logout
+                loginNavLink.setAttribute('data-auth', 'true'); // Custom attribute to track state
+                // Remove existing click listener to avoid duplicates if user logs in/out multiple times on same page
+                loginNavLink.removeEventListener('click', handleLogout); // Remove previous logout listener
+                loginNavLink.addEventListener('click', handleLogout); // Add logout handler
+            } else {
+                // No user is logged in
+                loginNavLink.textContent = 'Login';
+                loginNavLink.href = 'login.html';
+                loginNavLink.removeAttribute('data-auth');
+                loginNavLink.removeEventListener('click', handleLogout); // Ensure no logout listener if not logged in
+            }
         }
     });
+
+    // --- Home Page Logic (index.html) ---
+    const enrollNowButton = document.getElementById('enrollNowBtn');
+    if (enrollNowButton) {
+        enrollNowButton.addEventListener('click', () => {
+            window.location.href = 'courses.html'; // Redirect to courses page
+        });
+    }
+
+    // --- Contact Page Logic (contact.html) ---
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = contactForm.contactName.value;
+            const email = contactForm.contactEmail.value;
+            const message = contactForm.contactMessage.value;
+            addContactMessage(name, email, message);
+        });
+    }
+
+    // --- Courses Page Logic (courses.html) ---
+    // The fetchCourses() function is called when the DOM is loaded,
+    // but only if the '.courses-section' element is present.
+    if (document.querySelector('.courses-section')) {
+        fetchCourses();
+    }
+
+    // --- Login/Sign Up Page Logic (login.html) ---
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const signupRedirectBtn = document.getElementById('signupRedirectBtn');
+    const loginRedirectBtn = document.getElementById('loginRedirectBtn');
+    const signupSection = document.getElementById('signupSection');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = loginForm.loginEmail.value;
+            const password = loginForm.loginPassword.value;
+            handleLogin(email, password);
+        });
+    }
+
+    if (signupForm) {
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = signupForm.signupEmail.value;
+            const password = signupForm.signupPassword.value;
+            handleSignup(email, password);
+        });
+    }
+
+    if (signupRedirectBtn) {
+        signupRedirectBtn.addEventListener('click', () => {
+            if (loginForm) loginForm.style.display = 'none';
+            if (signupSection) signupSection.style.display = 'block';
+        });
+    }
+
+    if (loginRedirectBtn) {
+        loginRedirectBtn.addEventListener('click', () => {
+            if (signupSection) signupSection.style.display = 'none';
+            if (loginForm) loginForm.style.display = 'block';
+        });
+    }
 });
 
-// Example of how you might add a course directly through the console for testing:
-// import { db, auth } from './app.js'; // Import if running this outside of the module
-// import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-// async function addInitialCourse() {
-//     try {
-//         await addDoc(collection(db, "courses"), {
-//             title: "Web Development Basics",
-//             description: "Learn HTML, CSS, JavaScript, and more!",
-//             duration: "3 Months",
-//             price: "$299"
-//         });
-//         await addDoc(collection(db, "courses"), {
-//             title: "Data Science with Python",
-//             description: "Master Python for data analysis and machine learning.",
-//             duration: "4 Months",
-//             price: "$399"
-//         });
-//         console.log("Initial courses added!");
-//     } catch (e) {
-//         console.error("Error adding initial courses: ", e);
-//     }
-// }
-// addInitialCourse();
+// --- Example for adding initial courses (run once in Firebase console or locally for testing) ---
+// You only need to run this code ONCE to populate your Firestore 'courses' collection.
+// You can uncomment it and run it in your browser's console while on any page,
+// or create a temporary script to run it. Make sure you have the 'db' import if running separately.
+/*
+import { db } from './app.js'; // Ensure db is imported if running outside of app.js context
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+async function addDemoCourses() {
+    try {
+        await addDoc(collection(db, "courses"), {
+            title: "Web Development Fundamentals",
+            description: "Learn the basics of HTML, CSS, and JavaScript to build responsive websites.",
+            duration: "3 Months",
+            price: "$299"
+        });
+        await addDoc(collection(db, "courses"), {
+            title: "Data Science with Python",
+            description: "Master data analysis, visualization, and machine learning using Python.",
+            duration: "4 Months",
+            price: "$399"
+        });
+        await addDoc(collection(db, "courses"), {
+            title: "Advanced Java Programming",
+            description: "Dive deep into Java concepts, object-oriented programming, and enterprise applications.",
+            duration: "5 Months",
+            price: "$499"
+        });
+        await addDoc(collection(db, "courses"), {
+            title: "Competitive Programming",
+            description: "Enhance your problem-solving and algorithmic skills for coding contests.",
+            duration: "2 Months",
+            price: "$199"
+        });
+        console.log("Demo courses added to Firestore!");
+    } catch (e) {
+        console.error("Error adding demo courses: ", e);
+    }
+}
+// Call this function once if you want to add demo data
+// addDemoCourses();
+*/
