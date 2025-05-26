@@ -4,28 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ABP Classes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header>
-        <nav>
-            <h1>ABP Classes</h1>
-            <ul>
-                <li><a href="login.html">Login / Signup</a></li>
-            </ul>
-        </nav>
-    </header>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div id="app-container" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <div id="auth-section">
+            <h2 class="text-2xl font-bold mb-6 text-center">Login / Register</h2>
+            <div id="error-message" class="text-red-500 text-center mb-4 hidden"></div>
+            <input type="email" id="email" placeholder="Email" class="w-full p-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="password" id="password" placeholder="Password" class="w-full p-3 mb-6 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="login-btn" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-200">Login</button>
+            <p class="text-center mt-4">Don't have an account? <button id="register-toggle-btn" class="text-blue-500 hover:underline">Register</button></p>
+            <button id="register-btn" class="w-full bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition duration-200 mt-2 hidden">Register</button>
+            <p class="text-center mt-4 hidden" id="login-toggle-text">Already have an account? <button id="login-toggle-btn" class="text-blue-500 hover:underline">Login</button></p>
+        </div>
 
-    <main class="hero">
-        <section>
-            <h2>Your Journey to Success Starts Here</h2>
-            <p>High-quality online education for all your learning needs.</p>
-            <a href="login.html" class="btn">Get Started</a>
-        </section>
-    </main>
+        <div id="dashboard-container" class="hidden w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="dashboard-title" class="text-2xl font-bold"></h2>
+                <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200">Logout</button>
+            </div>
+            <div id="dashboard-content" class="min-h-[300px]">
+                </div>
+        </div>
+    </div>
 
-    <footer>
-        <p>&copy; 2024 ABP Classes. All rights reserved.</p>
-    </footer>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+
+    <script type="module" src="js/firebase-init.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/admin.js"></script>
+    <script type="module" src="js/student.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
