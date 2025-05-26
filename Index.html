@@ -8,39 +8,24 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to ABP Classes</h1>
+        <nav>
+            <h1>ABP Classes</h1>
+            <ul>
+                <li><a href="login.html">Login / Signup</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <main class="auth-container">
-        <section id="login-section">
-            <h2>Login</h2>
-            <form id="login-form">
-                <input type="email" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-            <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
-        </section>
-
-        <section id="signup-section" style="display: none;">
-            <h2>Sign Up</h2>
-            <form id="signup-form">
-                <input type="text" id="signup-name" placeholder="Your Name" required>
-                <input type="email" id="signup-email" placeholder="Email" required>
-                <input type="password" id="signup-password" placeholder="Password" required>
-                <button type="submit">Sign Up</button>
-            </form>
-            <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+    <main class="hero">
+        <section>
+            <h2>Your Journey to Success Starts Here</h2>
+            <p>High-quality online education for all your learning needs.</p>
+            <a href="login.html" class="btn">Get Started</a>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2023 ABP Classes. All rights reserved.</p>
+        <p>&copy; 2024 ABP Classes. All rights reserved.</p>
     </footer>
-
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-    <script src="script.js"></script> </body>
+</body>
 </html>
