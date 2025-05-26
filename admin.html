@@ -37,10 +37,16 @@
         }
 
         .admin-section input[type="text"],
-        .admin-section input[type="number"],
-        .admin-section textarea {
+        .admin-section input[type="email"],
+        .admin-section textarea,
+        .admin-section select { /* Added for select dropdown */
             width: calc(100% - 24px); /* Adjust for padding */
             margin-bottom: 15px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
         }
 
         .admin-section button {
@@ -114,6 +120,29 @@
         .edit-fields input, .edit-fields textarea {
             margin-bottom: 10px;
         }
+
+        /* User assignment styling */
+        .user-assign-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .user-assign-item:last-child {
+            border-bottom: none;
+        }
+        .user-assign-item .user-email {
+            font-weight: bold;
+            flex-grow: 1;
+        }
+        .user-assign-item select {
+            margin-right: 10px;
+            max-width: 200px;
+        }
+        .user-assign-item button {
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
@@ -138,13 +167,23 @@
                     <input type="text" id="courseTitle" placeholder="Course Title" required>
                     <textarea id="courseDescription" placeholder="Course Description" rows="3" required></textarea>
                     <input type="text" id="courseDuration" placeholder="Duration (e.g., 3 Months)" required>
-                    <input type="number" id="coursePrice" placeholder="Price (e.g., 299)" required>
+
+                    <input type="text" id="courseVideoUrls" placeholder="YouTube Video IDs (comma-separated)" title="Enter comma-separated YouTube video IDs (e.g., ID1,ID2)">
+                    <input type="file" id="coursePdfs" multiple accept=".pdf" title="Select multiple PDF files">
+                    
                     <button type="submit">Add New Course</button>
                 </form>
 
                 <h4>Existing Courses</h4>
                 <div id="courseListAdmin" class="data-list">
                     <p>Loading courses...</p>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>Assign Courses to Users</h3>
+                <div id="userCourseAssignmentList" class="data-list">
+                    <p>Loading users and courses...</p>
                 </div>
             </div>
 
